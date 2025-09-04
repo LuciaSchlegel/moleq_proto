@@ -1,26 +1,704 @@
 @import "tailwindcss";
 
+/* === MoleQlar Design Tokens === */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --primary-color: #D3D7FF;
+  --secondary-color: #101112;
+  --primary-hover-color: #999CB9;
+  --secondary-hover-color: #999CB9;
+  --text-color: white;
+  --background-color: black;
+  --overlay-bg: rgba(33, 36, 70, .7);
+
+  /* Layout & spacing */
+  --mobile-swipe-width: calc(90vw - 15px);
+  --grid-width: 1280px;
+  --grid-width-row: 1380px;
+  --section-spacing-mobile: 50px;
+  --section-spacing-desktop: 80px;
+
+  /* Typography scales */
+  --font-body-scale: 1.0;
+  --font-body-line-height-scale: 1.0;
+  --font-body-letter-spacing: 0.0em;
+  --font-heading-scale: 1.0;
+  --font-heading-line-height-scale: 1.0;
+  --font-heading-letter-spacing: -0.02em;
+  --font-body-medium-weight: 500;
+  --font-body-bold-weight: 600;
+  --font-weight-bold: 600;
+
+  /* Background colors */
+  --bg-body: #F5F5F5;
+  --bg-body-rgb: 245,245,245;
+  --bg-body-darken: #ededed;
+  --payment-terms-background-color: #F5F5F5;
+
+  /* Text colors */
+  --color-body: #38383d;
+  --color-body-rgb: 56,56,61;
+  --color-heading: #101112;
+  --color-heading-rgb: 16,17,18;
+  --color-accent: #545875;
+  --color-accent-hover: #454860;
+  --color-accent-rgb: 84,88,117;
+
+  /* Border colors */
+  --color-border: #e6e9f5;
+  --color-form-border: #b1b4c2;
+  --color-overlay-rgb: 144,147,158;
+
+  /* Card backgrounds */
+  --color-article-card-bg: #ffffff;
+  --color-product-card-bg: rgba(0,0,0,0);
+  --color-drawer-bg: #f2f4fc;
+  --color-drawer-bg-rgb: 242,244,252;
+
+  /* Header colors */
+  --color-header-bg: #F5F5F5;
+  --color-header-bg-rgb: 245,245,245;
+  --color-header-text: #101112;
+  --color-header-text-rgb: 16,17,18;
+  --color-header-links: #38383d;
+  --color-header-links-rgb: 56,56,61;
+  --color-header-links-hover: #999cb9;
+  --color-header-links-hover-rgb: 153,156,185;
+  --color-header-icons: #101112;
+  --color-header-border: rgba(0,0,0,0);
+
+  /* Button styles */
+  --button-padding: 8px 24px;
+  --button-border-radius: 25px;
+  --button-letter-spacing: 0.0em;
+  --solid-button-background: #38383d;
+  --solid-button-background-hover: #27272a;
+  --solid-button-label: #ffffff;
+  --white-button-label: #101112;
+
+  /* Border radius */
+  --border-radius: 50px;
+  --block-border-radius: 16px;
+  --input-border-radius: 6px;
+  --badge-corner-radius: 14px;
+
+  /* Shadows */
+  --block-shadows: 0px 4px 6px rgba(0, 0, 0, 0.08);
+
+  /* Footer colors */
+  --color-footer-heading: #FFFFFF;
+  --color-footer-heading-rgb: 255,255,255;
+  --color-footer-text: #e6e9f5;
+  --color-footer-text-rgb: 230,233,245;
+  --color-footer-link: #999cb9;
+  --color-footer-link-hover: #FFFFFF;
+  --color-footer-border: #90939e;
+  --color-footer-border-rgb: 144,147,158;
+  --color-footer-bg: #545875;
+
+  /* Pricing & inventory colors */
+  --color-price: #38383d;
+  --color-price-rgb: 56,56,61;
+  --color-price-discounted: #ff4d4f;
+  --color-star: #faad14;
+  --color-inventory-instock: #52c41a;
+  --color-inventory-lowstock: #faad14;
+
+  /* Badge colors */
+  --color-badge-text: #ffffff;
+  --color-badge-sold-out: #6d6b6b;
+  --color-badge-sale: #c62a32;
+  --color-badge-preorder: #666666;
+
+  /* VO2 specific gauge colors  */
+  --gauge-low: #ff4d4f;   
+  --gauge-med: #faad14;    
+  --gauge-high: #52c41a;   
+
+  /* Announcement bar */
+  --color-announcement-bar-text: #ffffff;
+  --color-announcement-bar-bg: #101112;
+  --color-secondary-menu-text: #38383d;
+  --color-secondary-menu-bg: #f2f4fc;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* === Modern VO2 Gauge Styles === */
+
+.vo2-card-modern {
+  background: linear-gradient(135deg, var(--color-article-card-bg) 10%, var(--primary-color) 120%);
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: var(--block-shadows);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+  cursor: default;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.vo2-card-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vo2-card-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
+  border-radius: 24px;
+  pointer-events: none;
+}
+
+.vo2-header-modern {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+}
+
+.vo2-group-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px 18px;
+  border-radius: var(--button-border-radius);
+  font-size: 14px;
+  font-weight: var(--font-body-bold-weight);
+  color: var(--color-body);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.vo2-group-icon {
+  font-size: 16px;
+  color: var(--primary-color);
+}
+
+.vo2-title-modern {
+  text-align: center;
+  font-size: 54px;
+  font-weight: 300;
+  color: var(--color-heading);
+  margin: 0 0 36px 0;
+  letter-spacing: -0.02em;
+}
+
+.vo2-fan-gauge {
+  display: flex;
+  justify-content: center;
+  margin: 32px 0 40px 0;
+}
+
+.vo2-gauge-container {
+  width: 380px;
+  height: 220px;
+  max-width: 100%;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.vo2-value-display {
+  text-align: center;
+  margin: 32px 0;
+  position: relative;
+  z-index: 5;
+}
+
+.vo2-main-value {
+  font-size: 84px;
+  font-weight: 700;
+  color: var(--color-heading);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.vo2-unit {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-body);
+  margin-top: 4px;
+}
+
+.vo2-assessment-modern {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 14px 24px;
+  border-radius: 25px;
+  margin: 28px auto;
+  width: fit-content;
+  font-size: 17px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.vo2-info-icon {
+  font-size: 18px;
+  color: var(--color-body);
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.vo2-baseline-modern {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 14px 24px;
+  border-radius: 25px;
+  margin: 28px auto 0 auto;
+  width: fit-content;
+  font-size: 17px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+/* Loading and error states */
+.vo2-loading, .vo2-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 24px;
+  text-align: center;
+}
+
+.vo2-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 18px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.vo2-loading p, .vo2-error p {
+  margin: 0;
+  color: var(--color-body);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.vo2-error p {
+  color: var(--gauge-low);
+}
+
+/* === Simplified VO2 Baseline Bar === */
+
+.vo2-baseline-simple {
+  margin: 32px 0 20px 0;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: var(--button-border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.vo2-baseline-header-simple {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.vo2-baseline-label {
+  font-size: 14px;
+  font-weight: var(--font-body-bold-weight);
+  color: var(--color-body);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vo2-baseline-percentage {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: var(--font-heading-letter-spacing);
+}
+
+.vo2-baseline-bar-container {
+  position: relative;
+}
+
+.vo2-baseline-bar {
+  position: relative;
+  height: 12px;
+  margin: 16px 0;
+}
+
+.vo2-baseline-track-simple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: linear-gradient(90deg, 
+    rgba(220, 68, 70, 0.2) 0%, 
+    rgba(234, 179, 8, 0.2) 50%, 
+    rgba(34, 197, 94, 0.2) 100%);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.vo2-baseline-center-marker {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 16px;
+  background: var(--color-body);
+  border-radius: 1px;
+  opacity: 0.8;
+}
+
+.vo2-current-position {
+  position: absolute;
+  top: -4px;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  animation: currentPositionPulse 2s ease-in-out infinite;
+}
+
+@keyframes currentPositionPulse {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.1); }
+}
+
+.vo2-connection-line {
+  position: absolute;
+  top: 4px;
+  height: 4px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.vo2-baseline-scale-simple {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--color-body);
+  font-weight: 500;
+}
+
+.vo2-baseline-center-label {
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+/* === Enhanced Dashboard Layout === */
+
+.vo2-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.vo2-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 20px;
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: var(--button-border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--block-shadows);
+  backdrop-filter: blur(10px);
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.vo2-controls:hover {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.vo2-controls > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.vo2-controls label {
+  font-size: 13px;
+  font-weight: var(--font-body-bold-weight);
+  color: var(--color-heading);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vo2-select, .vo2-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid var(--color-form-border);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: var(--font-body-medium-weight);
+  color: var(--color-heading);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.vo2-select:hover, .vo2-input:hover {
+  border-color: var(--primary-hover-color);
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.01);
+}
+
+.vo2-select:focus, .vo2-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(211, 215, 255, 0.3);
+  transform: scale(1.02);
+}
+
+.vo2-metrics {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  padding: 28px;
+  margin-top: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.vo2-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  margin: 0 -8px;
+  padding: 12px 8px;
+}
+
+.vo2-metric-row:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.01);
+}
+
+.vo2-metric-row:last-child {
+  border-bottom: none;
+}
+
+.vo2-metric-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-body);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.vo2-metric-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.vo2-performance-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .vo2-dashboard {
+    padding: 16px;
+    gap: 16px;
+    max-width: 100%;
+  }
+
+  .vo2-card-modern {
+    padding: 24px;
+    margin: 0;
+    border-radius: 20px;
+    max-width: 100%;
+  }
+  
+  .vo2-controls {
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    grid-template-columns: 1fr;
+  }
+  
+  .vo2-main-value {
+    font-size: 64px;
+  }
+  
+  .vo2-title-modern {
+    font-size: 40px;
+    margin-bottom: 20px;
+  }
+  
+  .vo2-gauge-container {
+    width: 320px;
+    height: 180px;
+  }
+
+  .vo2-value-display {
+    margin: 20px 0;
+  }
+
+  .vo2-assessment-modern,
+  .vo2-baseline-modern {
+    margin: 16px auto;
+    padding: 10px 16px;
+    font-size: 15px;
+  }
+
+  .vo2-controls label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .vo2-select, .vo2-input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  
+  .vo2-metrics {
+    padding: 20px;
+  }
+  
+  .vo2-metric-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    text-align: left;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (max-width: 480px) {
+  .vo2-card-modern {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .vo2-title-modern {
+    font-size: 36px;
+    margin-bottom: 16px;
+  }
+
+  .vo2-main-value {
+    font-size: 56px;
+  }
+
+  .vo2-gauge-container {
+    width: 280px;
+    height: 160px;
+  }
+
+  .vo2-controls {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .vo2-controls label {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+
+  .vo2-select, .vo2-input {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .vo2-assessment-modern,
+  .vo2-baseline-modern {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+  
+  .vo2-baseline-simple {
+    padding: 20px 16px;
+    margin: 24px 0 16px 0;
+  }
+  
+  .vo2-baseline-label {
+    font-size: 12px;
+  }
+  
+  .vo2-baseline-percentage {
+    font-size: 16px;
+  }
+  
+  .vo2-current-position {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .vo2-metrics {
+    padding: 16px;
+  }
+}
+
+@media (max-height: 800px) {
+  .vo2-dashboard {
+    justify-content: space-between;
+  }
+
+  .vo2-card-modern {
+    padding: 28px;
+  }
+
+  .vo2-title-modern {
+    font-size: 42px;
+    margin-bottom: 20px;
+  }
+
+  .vo2-main-value {
+    font-size: 68px;
+  }
+
+  .vo2-gauge-container {
+    height: 180px;
+  }
 }
