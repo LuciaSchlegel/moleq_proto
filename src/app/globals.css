@@ -479,6 +479,19 @@
   backdrop-filter: blur(5px);
   transition: all 0.2s ease;
   cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  min-height: 48px; /* Improved touch target for mobile */
+}
+
+/* Custom dropdown arrow for select */
+.vo2-select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
 }
 
 .vo2-select:hover, .vo2-input:hover {
@@ -493,6 +506,21 @@
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 0 0 3px rgba(211, 215, 255, 0.3);
   transform: scale(1.02);
+}
+
+/* Touch-specific improvements */
+@media (hover: none) and (pointer: coarse) {
+  .vo2-select:hover, .vo2-input:hover {
+    transform: none;
+    border-color: var(--color-form-border);
+    background: rgba(255, 255, 255, 0.8);
+  }
+  
+  .vo2-select:active, .vo2-input:active {
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.95);
+    transform: scale(0.98);
+  }
 }
 
 .vo2-metrics {
@@ -563,10 +591,15 @@
   }
   
   .vo2-controls {
+    display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
     padding: 20px;
-    grid-template-columns: 1fr;
+    grid-template-columns: none;
+  }
+
+  .vo2-controls > div {
+    width: 100%;
   }
   
   .vo2-main-value {
@@ -595,13 +628,21 @@
   }
 
   .vo2-controls label {
-    font-size: 12px;
-    margin-bottom: 6px;
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: var(--font-body-bold-weight);
   }
 
   .vo2-select, .vo2-input {
-    padding: 12px 14px;
-    font-size: 14px;
+    padding: 16px 18px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 52px;
+    border-radius: 12px;
+  }
+
+  .vo2-select {
+    padding-right: 45px;
+    background-size: 18px;
   }
   
   .vo2-metrics {
@@ -637,23 +678,32 @@
   }
 
   .vo2-controls {
-    padding: 16px;
-    gap: 10px;
+    padding: 18px;
+    gap: 14px;
   }
 
   .vo2-controls label {
-    font-size: 11px;
-    margin-bottom: 4px;
+    font-size: 13px;
+    margin-bottom: 6px;
+    font-weight: var(--font-body-bold-weight);
   }
 
   .vo2-select, .vo2-input {
-    padding: 10px 12px;
-    font-size: 13px;
+    padding: 18px 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 56px;
+    border-radius: 14px;
+  }
+
+  .vo2-select {
+    padding-right: 48px;
+    background-size: 20px;
+    background-position: right 16px center;
   }
 
   .vo2-assessment-modern,
   .vo2-baseline-modern {
-    padding: 8px 14px;
+    padding: 10px 16px;
     font-size: 14px;
   }
   
