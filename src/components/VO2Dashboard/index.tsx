@@ -34,8 +34,8 @@ export default function VO2Dashboard() {
   // Generate age options (10-99)
   const ageOptions = Array.from({ length: 90 }, (_, i) => i + 10);
   
-  // Generate VO2max options with 0.5 increments
-  const vo2Options = Array.from({ length: 201 }, (_, i) => (i * 0.5).toFixed(1));
+  // Generate VO2max options with 0.1 increments for better precision
+  const vo2Options = Array.from({ length: 1001 }, (_, i) => (i * 0.1).toFixed(1));
 
   // Handle input validation for desktop
   const handleAgeChange = (value: number) => {
