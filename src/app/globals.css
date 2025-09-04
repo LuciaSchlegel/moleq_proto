@@ -4,121 +4,31 @@
 :root {
   --primary-color: #D3D7FF;
   --secondary-color: #101112;
-  --primary-hover-color: #999CB9;
-  --secondary-hover-color: #999CB9;
-  --text-color: white;
-  --background-color: black;
-  --overlay-bg: rgba(33, 36, 70, .7);
-
-  /* Layout & spacing */
-  --mobile-swipe-width: calc(90vw - 15px);
-  --grid-width: 1280px;
-  --grid-width-row: 1380px;
-  --section-spacing-mobile: 50px;
-  --section-spacing-desktop: 80px;
-
-  /* Typography scales */
-  --font-body-scale: 1.0;
-  --font-body-line-height-scale: 1.0;
-  --font-body-letter-spacing: 0.0em;
-  --font-heading-scale: 1.0;
-  --font-heading-line-height-scale: 1.0;
-  --font-heading-letter-spacing: -0.02em;
-  --font-body-medium-weight: 500;
-  --font-body-bold-weight: 600;
-  --font-weight-bold: 600;
 
   /* Background colors */
   --bg-body: #F5F5F5;
-  --bg-body-rgb: 245,245,245;
-  --bg-body-darken: #ededed;
-  --payment-terms-background-color: #F5F5F5;
+  --color-article-card-bg: #ffffff;
 
   /* Text colors */
   --color-body: #38383d;
-  --color-body-rgb: 56,56,61;
   --color-heading: #101112;
-  --color-heading-rgb: 16,17,18;
-  --color-accent: #545875;
-  --color-accent-hover: #454860;
-  --color-accent-rgb: 84,88,117;
 
   /* Border colors */
-  --color-border: #e6e9f5;
   --color-form-border: #b1b4c2;
-  --color-overlay-rgb: 144,147,158;
-
-  /* Card backgrounds */
-  --color-article-card-bg: #ffffff;
-  --color-product-card-bg: rgba(0,0,0,0);
-  --color-drawer-bg: #f2f4fc;
-  --color-drawer-bg-rgb: 242,244,252;
-
-  /* Header colors */
-  --color-header-bg: #F5F5F5;
-  --color-header-bg-rgb: 245,245,245;
-  --color-header-text: #101112;
-  --color-header-text-rgb: 16,17,18;
-  --color-header-links: #38383d;
-  --color-header-links-rgb: 56,56,61;
-  --color-header-links-hover: #999cb9;
-  --color-header-links-hover-rgb: 153,156,185;
-  --color-header-icons: #101112;
-  --color-header-border: rgba(0,0,0,0);
 
   /* Button styles */
-  --button-padding: 8px 24px;
   --button-border-radius: 25px;
-  --button-letter-spacing: 0.0em;
-  --solid-button-background: #38383d;
-  --solid-button-background-hover: #27272a;
-  --solid-button-label: #ffffff;
-  --white-button-label: #101112;
 
   /* Border radius */
-  --border-radius: 50px;
   --block-border-radius: 16px;
-  --input-border-radius: 6px;
-  --badge-corner-radius: 14px;
 
   /* Shadows */
   --block-shadows: 0px 4px 6px rgba(0, 0, 0, 0.08);
-
-  /* Footer colors */
-  --color-footer-heading: #FFFFFF;
-  --color-footer-heading-rgb: 255,255,255;
-  --color-footer-text: #e6e9f5;
-  --color-footer-text-rgb: 230,233,245;
-  --color-footer-link: #999cb9;
-  --color-footer-link-hover: #FFFFFF;
-  --color-footer-border: #90939e;
-  --color-footer-border-rgb: 144,147,158;
-  --color-footer-bg: #545875;
-
-  /* Pricing & inventory colors */
-  --color-price: #38383d;
-  --color-price-rgb: 56,56,61;
-  --color-price-discounted: #ff4d4f;
-  --color-star: #faad14;
-  --color-inventory-instock: #52c41a;
-  --color-inventory-lowstock: #faad14;
-
-  /* Badge colors */
-  --color-badge-text: #ffffff;
-  --color-badge-sold-out: #6d6b6b;
-  --color-badge-sale: #c62a32;
-  --color-badge-preorder: #666666;
 
   /* VO2 specific gauge colors  */
   --gauge-low: #ff4d4f;   
   --gauge-med: #faad14;    
   --gauge-high: #52c41a;   
-
-  /* Announcement bar */
-  --color-announcement-bar-text: #ffffff;
-  --color-announcement-bar-bg: #101112;
-  --color-secondary-menu-text: #38383d;
-  --color-secondary-menu-bg: #f2f4fc;
 }
 
 /* === Modern VO2 Gauge Styles === */
@@ -139,23 +49,10 @@
 }
 
 .vo2-card-modern:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
-  box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.15),
-    0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.vo2-card-modern::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
-  border-radius: 24px;
-  pointer-events: none;
-}
 
 .vo2-header-modern {
   display: flex;
@@ -171,7 +68,7 @@
   padding: 10px 18px;
   border-radius: var(--button-border-radius);
   font-size: 14px;
-  font-weight: var(--font-body-bold-weight);
+  font-weight: 600;
   color: var(--color-body);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -333,7 +230,7 @@
 
 .vo2-baseline-label {
   font-size: 14px;
-  font-weight: var(--font-body-bold-weight);
+  font-weight: 600;
   color: var(--color-body);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -342,7 +239,7 @@
 .vo2-baseline-percentage {
   font-size: 18px;
   font-weight: 700;
-  letter-spacing: var(--font-heading-letter-spacing);
+  letter-spacing: -0.02em;
 }
 
 .vo2-baseline-bar-container {
@@ -431,15 +328,16 @@
   max-width: 600px;
   width: 100%;
   margin: 0 auto;
+  padding: 16px;
 }
 
 .vo2-controls {
   display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   padding: 28px;
   background: rgba(255, 255, 255, 0.9);
-  border-radius: var(--button-border-radius);
+  border-radius: 25px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: var(--block-shadows);
   backdrop-filter: blur(10px);
@@ -447,80 +345,55 @@
   transition: all 0.3s ease;
 }
 
-.vo2-controls:hover {
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-  transform: translateY(-1px);
-}
-
-.vo2-controls > div {
+.vo2-control-group {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .vo2-controls label {
   font-size: 13px;
-  font-weight: var(--font-body-bold-weight);
+  font-weight: 600;
   color: var(--color-heading);
   margin-bottom: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.vo2-select, .vo2-input {
+.vo2-select, 
+.vo2-input {
   width: 100%;
   padding: 14px 18px;
   border: 1px solid var(--color-form-border);
   border-radius: 12px;
   font-size: 15px;
-  font-weight: var(--font-body-medium-weight);
+  font-weight: 500;
   color: var(--color-heading);
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(5px);
   transition: all 0.2s ease;
-  cursor: pointer;
+  box-sizing: border-box;
+  min-height: 48px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  min-height: 48px; /* Improved touch target for mobile */
 }
 
-/* Custom dropdown arrow for select */
 .vo2-select {
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
   padding-right: 40px;
+  cursor: pointer;
 }
 
-.vo2-select:hover, .vo2-input:hover {
-  border-color: var(--primary-hover-color);
-  background: rgba(255, 255, 255, 0.9);
-  transform: scale(1.01);
-}
-
-.vo2-select:focus, .vo2-input:focus {
+.vo2-select:focus, 
+.vo2-input:focus {
   outline: none;
   border-color: var(--primary-color);
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 0 0 3px rgba(211, 215, 255, 0.3);
-  transform: scale(1.02);
-}
-
-/* Touch-specific improvements */
-@media (hover: none) and (pointer: coarse) {
-  .vo2-select:hover, .vo2-input:hover {
-    transform: none;
-    border-color: var(--color-form-border);
-    background: rgba(255, 255, 255, 0.8);
-  }
-  
-  .vo2-select:active, .vo2-input:active {
-    border-color: var(--primary-color);
-    background: rgba(255, 255, 255, 0.95);
-    transform: scale(0.98);
-  }
 }
 
 .vo2-metrics {
@@ -538,12 +411,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 12px 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.2s ease;
   border-radius: 8px;
   margin: 0 -8px;
-  padding: 12px 8px;
 }
 
 .vo2-metric-row:hover {
@@ -575,21 +447,14 @@
   gap: 8px;
 }
 
-/* Responsive design */
+/* Mobile Responsive Design */
 @media (max-width: 768px) {
   .vo2-dashboard {
-    padding: 16px;
+    padding: 12px;
     gap: 16px;
     max-width: 100%;
   }
 
-  .vo2-card-modern {
-    padding: 24px;
-    margin: 0;
-    border-radius: 20px;
-    max-width: 100%;
-  }
-  
   .vo2-controls {
     display: flex;
     flex-direction: column;
@@ -598,26 +463,37 @@
     grid-template-columns: none;
   }
 
-  .vo2-controls > div {
+  .vo2-control-group {
     width: 100%;
   }
-  
-  .vo2-main-value {
-    font-size: 64px;
+
+  .vo2-select, 
+  .vo2-input {
+    padding: 16px 18px;
+    font-size: 16px;
+    min-height: 52px;
+    border-radius: 12px;
   }
-  
+
+  .vo2-select {
+    padding-right: 45px;
+    background-size: 18px;
+  }
+
+  .vo2-card-modern {
+    padding: 24px;
+    margin: 0;
+    border-radius: 20px;
+    max-width: 100%;
+  }
+
   .vo2-title-modern {
     font-size: 40px;
     margin-bottom: 20px;
   }
-  
-  .vo2-gauge-container {
-    width: 320px;
-    height: 180px;
-  }
 
-  .vo2-value-display {
-    margin: 20px 0;
+  .vo2-main-value {
+    font-size: 64px;
   }
 
   .vo2-assessment-modern,
@@ -627,28 +503,10 @@
     font-size: 15px;
   }
 
-  .vo2-controls label {
-    font-size: 14px;
-    margin-bottom: 8px;
-    font-weight: var(--font-body-bold-weight);
-  }
-
-  .vo2-select, .vo2-input {
-    padding: 16px 18px;
-    font-size: 16px; /* Prevents zoom on iOS */
-    min-height: 52px;
-    border-radius: 12px;
-  }
-
-  .vo2-select {
-    padding-right: 45px;
-    background-size: 18px;
-  }
-  
   .vo2-metrics {
     padding: 20px;
   }
-  
+
   .vo2-metric-row {
     flex-direction: column;
     align-items: flex-start;
@@ -658,6 +516,34 @@
 }
 
 @media (max-width: 480px) {
+  .vo2-dashboard {
+    padding: 8px;
+  }
+
+  .vo2-controls {
+    padding: 18px;
+    gap: 14px;
+  }
+
+  .vo2-controls label {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .vo2-select, 
+  .vo2-input {
+    padding: 18px 16px;
+    font-size: 16px;
+    min-height: 56px;
+    border-radius: 14px;
+  }
+
+  .vo2-select {
+    padding-right: 48px;
+    background-size: 20px;
+    background-position: right 16px center;
+  }
+
   .vo2-card-modern {
     padding: 20px;
     border-radius: 18px;
@@ -672,83 +558,30 @@
     font-size: 56px;
   }
 
-  .vo2-gauge-container {
-    width: 280px;
-    height: 160px;
-  }
-
-  .vo2-controls {
-    padding: 18px;
-    gap: 14px;
-  }
-
-  .vo2-controls label {
-    font-size: 13px;
-    margin-bottom: 6px;
-    font-weight: var(--font-body-bold-weight);
-  }
-
-  .vo2-select, .vo2-input {
-    padding: 18px 16px;
-    font-size: 16px; /* Prevents zoom on iOS */
-    min-height: 56px;
-    border-radius: 14px;
-  }
-
-  .vo2-select {
-    padding-right: 48px;
-    background-size: 20px;
-    background-position: right 16px center;
-  }
-
   .vo2-assessment-modern,
   .vo2-baseline-modern {
     padding: 10px 16px;
     font-size: 14px;
   }
-  
-  .vo2-baseline-simple {
-    padding: 20px 16px;
-    margin: 24px 0 16px 0;
-  }
-  
-  .vo2-baseline-label {
-    font-size: 12px;
-  }
-  
-  .vo2-baseline-percentage {
-    font-size: 16px;
-  }
-  
-  .vo2-current-position {
-    width: 16px;
-    height: 16px;
-  }
-  
+
   .vo2-metrics {
     padding: 16px;
   }
 }
 
-@media (max-height: 800px) {
-  .vo2-dashboard {
-    justify-content: space-between;
+/* Touch-specific improvements */
+@media (hover: none) and (pointer: coarse) {
+  .vo2-select:hover, 
+  .vo2-input:hover {
+    transform: none;
+    border-color: var(--color-form-border);
+    background: rgba(255, 255, 255, 0.8);
   }
-
-  .vo2-card-modern {
-    padding: 28px;
-  }
-
-  .vo2-title-modern {
-    font-size: 42px;
-    margin-bottom: 20px;
-  }
-
-  .vo2-main-value {
-    font-size: 68px;
-  }
-
-  .vo2-gauge-container {
-    height: 180px;
+  
+  .vo2-select:active, 
+  .vo2-input:active {
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.95);
+    transform: scale(0.98);
   }
 }

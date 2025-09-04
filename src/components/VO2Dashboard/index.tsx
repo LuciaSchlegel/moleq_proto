@@ -35,12 +35,12 @@ export default function VO2Dashboard() {
   return (
     <div className="vo2-dashboard">
       <div className="vo2-controls">
-        <div>
+        <div className="vo2-control-group">
           <label htmlFor="sex-select">Sex</label>
-          <select 
+          <select
             id="sex-select"
-            className="vo2-select" 
-            value={sex} 
+            className="vo2-select"
+            value={sex}
             onChange={e => setSex(e.target.value as Sex)}
           >
             <option value="M">Male</option>
@@ -48,30 +48,30 @@ export default function VO2Dashboard() {
           </select>
         </div>
         
-        <div>
+        <div className="vo2-control-group">
           <label htmlFor="age-input">Age</label>
-          <input 
+          <input
             id="age-input"
-            className="vo2-input" 
-            type="number" 
-            min={10} 
+            className="vo2-input"
+            type="number"
+            min={10}
             max={99}
-            value={age} 
+            value={age}
             onChange={e => handleAgeChange(+e.target.value)}
             placeholder="25"
           />
         </div>
         
-        <div>
+        <div className="vo2-control-group">
           <label htmlFor="vo2-input">VO₂max (ml/kg/min)</label>
-          <input 
+          <input
             id="vo2-input"
-            className="vo2-input" 
-            type="number" 
+            className="vo2-input"
+            type="number"
             step="0.1"
             min="0"
             max="100"
-            value={vo2max} 
+            value={vo2max}
             onChange={e => handleVO2Change(+e.target.value)}
             placeholder="68.2"
           />
@@ -79,10 +79,10 @@ export default function VO2Dashboard() {
       </div>
 
       {/* Main Gauge Component */}
-      <VO2Gauge 
-        data={data} 
-        loading={loading} 
-        error={error} 
+      <VO2Gauge
+        data={data}
+        loading={loading}
+        error={error}
       />
 
       {data && !loading && !error && (
@@ -93,7 +93,7 @@ export default function VO2Dashboard() {
           </div>
           <div className="vo2-metric-row">
             <span className="vo2-metric-label">Fitness Zone</span>
-            <span 
+            <span
               className="vo2-metric-value"
               style={{ color: data.assessment.zoneColor }}
             >
@@ -109,18 +109,18 @@ export default function VO2Dashboard() {
           <div className="vo2-metric-row">
             <span className="vo2-metric-label">Performance vs Baseline</span>
             <div className="vo2-performance-indicator">
-              <span 
+              <span
                 className="vo2-metric-value"
-                style={{ 
-                  color: data.assessment.percentageVsBaseline >= 0 ? '#22c55e' : '#dc4446' 
+                style={{
+                  color: data.assessment.percentageVsBaseline >= 0 ? '#22c55e' : '#dc4446'
                 }}
               >
                 {data.assessment.percentageVsBaseline >= 0 ? '+' : ''}
                 {data.assessment.percentageVsBaseline.toFixed(1)}%
               </span>
-              <span style={{ 
+              <span style={{
                 fontSize: '12px',
-                color: data.assessment.percentageVsBaseline >= 0 ? '#22c55e' : '#dc4446' 
+                color: data.assessment.percentageVsBaseline >= 0 ? '#22c55e' : '#dc4446'
               }}>
                 {data.assessment.percentageVsBaseline >= 0 ? '↗️' : '↘️'}
               </span>
