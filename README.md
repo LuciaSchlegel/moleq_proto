@@ -1,6 +1,4 @@
-# MoleQlar VO₂max Assessment Platform
-
-A sophisticated web application for clinical-grade VO₂max assessment and cardiovascular fitness evaluation, built with modern web technologies and following evidence-based medical guidelines.
+# MoleQlar VO₂max Assessment
 
 ![MoleQlar VO2max Dashboard](https://img.shields.io/badge/Status-Production%20Ready-green)
 ![Next.js](https://img.shields.io/badge/Next.js-15.5.2-black)
@@ -23,7 +21,6 @@ VO₂max (maximal oxygen uptake) represents the maximum rate of oxygen consumpti
 
 - **Node.js** 18.17 or later
 - **npm** 9.0 or later (or **yarn** 1.22+ / **pnpm** 8.0+)
-- **Git** for version control
 
 ### Installation
 
@@ -273,15 +270,6 @@ npm i -g vercel
 vercel --prod
 ```
 
-### Docker
-```bash
-# Build Docker image
-docker build -t moleq-vo2max .
-
-# Run container
-docker run -p 3000:3000 moleq-vo2max
-```
-
 ### Traditional Hosting
 ```bash
 # Build for production
@@ -307,25 +295,6 @@ npm start
 
 ## 📝 License
 
-This project is proprietary software developed for MoleQlar Analytics. All rights reserved.
-
 ## 🤝 Contributing
 
-This is a private repository. For internal development:
-
-1. Create a feature branch from `main`
-2. Follow TypeScript and ESLint guidelines
-3. Add comprehensive tests for new features
-4. Update documentation as needed
-5. Submit pull request for review
-
 ## 📞 Support
-
-For technical support or clinical questions:
-- **Technical Issues**: [tech-support@moleqlar.com](mailto:tech-support@moleqlar.com)
-- **Clinical Questions**: [clinical@moleqlar.com](mailto:clinical@moleqlar.com)
-- **Documentation**: Internal wiki at `docs.moleqlar.com`
-
----
-
-**MoleQlar Analytics** - Advanced Molecular Diagnostics Platform
