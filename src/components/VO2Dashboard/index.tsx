@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sex } from "@/types/vo2";
 import { useVO2Data } from "@/hooks/useVO2Data";
 import VO2Gauge from "@/components/VO2Gauge";
@@ -10,6 +10,18 @@ export default function VO2Dashboard() {
   const [vo2max, setVo2max] = useState<number>(68.2);
   const [min] = useState<number>(20);
   const [max] = useState<number>(75);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const { data, loading, error } = useVO2Data({
     sex,
@@ -19,7 +31,13 @@ export default function VO2Dashboard() {
     max,
   });
 
-  // Handle input validation
+  // Generate age options (10-99)
+  const ageOptions = Array.from({ length: 90 }, (_, i) => i + 10);
+  
+  // Generate VO2max options with 0.5 increments
+  const vo2Options = Array.from({ length: 201 }, (_, i) => (i * 0.5).toFixed(1));
+
+  // Handle input validation for desktop
   const handleAgeChange = (value: number) => {
     if (value >= 10 && value <= 99) {
       setAge(value);
@@ -50,31 +68,61 @@ export default function VO2Dashboard() {
         
         <div className="vo2-control-group">
           <label htmlFor="age-input">Age</label>
-          <input
-            id="age-input"
-            className="vo2-input"
-            type="number"
-            min={10}
-            max={99}
-            value={age}
-            onChange={e => handleAgeChange(+e.target.value)}
-            placeholder="25"
-          />
+          {isMobile ? (
+            <select
+              id="age-input"
+              className="vo2-select"
+              value={age}
+              onChange={e => setAge(parseInt(e.target.value))}
+            >
+              {ageOptions.map(ageValue => (
+                <option key={ageValue} value={ageValue}>
+                  {ageValue} years
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              id="age-input"
+              className="vo2-input"
+              type="number"
+              min={10}
+              max={99}
+              value={age}
+              onChange={e => handleAgeChange(+e.target.value)}
+              placeholder="25"
+            />
+          )}
         </div>
         
         <div className="vo2-control-group">
           <label htmlFor="vo2-input">VO₂max (ml/kg/min)</label>
-          <input
-            id="vo2-input"
-            className="vo2-input"
-            type="number"
-            step="0.1"
-            min="0"
-            max="100"
-            value={vo2max}
-            onChange={e => handleVO2Change(+e.target.value)}
-            placeholder="68.2"
-          />
+          {isMobile ? (
+            <select
+              id="vo2-input"
+              className="vo2-select"
+              value={vo2max.toFixed(1)}
+              onChange={e => setVo2max(parseFloat(e.target.value))}
+            >
+              {vo2Options.map(vo2Value => (
+                <option key={vo2Value} value={vo2Value}>
+                  {vo2Value} ml/kg/min
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              id="vo2-input"
+              className="vo2-input"
+              type="number"
+              step="0.1"
+              min="0"
+              max="100"
+              value={vo2max}
+              onChange={e => handleVO2Change(+e.target.value)}
+              placeholder="68.2"
+            />
+          )}
         </div>
       </div>
 
