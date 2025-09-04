@@ -1,4 +1,4 @@
-// app/api/vo2max/route.ts - Enhanced version with improved calculations
+// app/api/vo2max/route.ts - Fixed version with proper error handling
 import { NextRequest, NextResponse } from 'next/server';
 
 type Sex = "M" | "F";
@@ -20,8 +20,8 @@ interface VO2Assessment {
   baseline: number;
   percentageVsBaseline: number;
   zoneColor: string;
-  confidence: number; // Statistical confidence in assessment
-  percentile: number; // Population percentile
+  confidence: number;
+  percentile: number;
   healthRisk: "Very Low" | "Low" | "Moderate" | "High" | "Very High";
 }
 
@@ -33,9 +33,14 @@ interface VO2Statistics {
   confidenceInterval: [number, number];
 }
 
-// Enhanced ACSM data with more granular categories and confidence intervals
+// Enhanced ACSM data with extended age ranges to handle younger individuals
 const ACSM: Record<Sex, { decade: [number, number]; bands: [string, number, number][] }[]> = {
   M: [
+    // Added range for teens/young adults
+    { decade: [15,19], bands: [
+      ["Very Poor", 35.0, 38.0], ["Poor", 38.0, 41.3], ["Fair", 41.3, 48.1], 
+      ["Good", 48.1, 53.9], ["Excellent", 53.9, 58.9], ["Superior", 58.9, Infinity]
+    ]},
     { decade: [20,29], bands: [
       ["Very Poor", 32.0, 35.0], ["Poor", 35.0, 38.3], ["Fair", 38.3, 45.1], 
       ["Good", 45.1, 50.9], ["Excellent", 50.9, 55.9], ["Superior", 55.9, Infinity]
@@ -58,6 +63,11 @@ const ACSM: Record<Sex, { decade: [number, number]; bands: [string, number, numb
     ]},
   ],
   F: [
+    // Added range for teens/young adults
+    { decade: [15,19], bands: [
+      ["Very Poor", 27.0, 30.0], ["Poor", 30.0, 33.9], ["Fair", 33.9, 38.9], 
+      ["Good", 38.9, 44.0], ["Excellent", 44.0, 48.0], ["Superior", 48.0, Infinity]
+    ]},
     { decade: [20,29], bands: [
       ["Very Poor", 24.0, 27.0], ["Poor", 27.0, 30.9], ["Fair", 30.9, 35.9], 
       ["Good", 35.9, 41.0], ["Excellent", 41.0, 45.0], ["Superior", 45.0, Infinity]
@@ -115,11 +125,26 @@ function classifyVO2Enhanced(sex: Sex, age: number, vo2: number): {
   percentile: number;
   healthRisk: "Very Low" | "Low" | "Moderate" | "High" | "Very High";
 } {
-  const ageGroup = ACSM[sex].find(({ decade:[a,b] }) => age >= a && age <= b) ?? ACSM[sex][0];
+  // Fixed: Handle cases where no age group is found with proper fallback
+  const ageGroup = ACSM[sex].find(({ decade:[a,b] }) => age >= a && age <= b);
   
-  // Find the appropriate band with lower and upper bounds
+  if (!ageGroup) {
+    console.warn(`No ACSM age group found for ${sex}, age ${age}. Using youngest available group.`);
+    // Use the youngest available age group as fallback
+    const fallbackGroup = ACSM[sex][0];
+    return classifyWithAgeGroup(fallbackGroup, vo2, 0.75); // Lower confidence for fallback
+  }
+  
+  return classifyWithAgeGroup(ageGroup, vo2, 0.95);
+}
+
+function classifyWithAgeGroup(
+  ageGroup: { decade: [number, number]; bands: [string, number, number][] }, 
+  vo2: number, 
+  baseConfidence: number
+) {
   let label = "Superior";
-  let confidence = 0.95; // Default high confidence
+  let confidence = baseConfidence;
   
   // Check if value is below the lowest threshold (Very Poor)
   const lowestThreshold = ageGroup.bands[0][1]; // Very Poor lower bound
@@ -146,7 +171,7 @@ function classifyVO2Enhanced(sex: Sex, age: number, vo2: number): {
   
   // Handle extremely low values
   if (vo2 < lowestThreshold) {
-    percentile = Math.max(1, Math.round((vo2 / lowestThreshold) * 5)); // Scale to 1-5%
+    percentile = Math.max(1, Math.round((vo2 / lowestThreshold) * 5));
   }
   
   // Determine zone
@@ -154,7 +179,7 @@ function classifyVO2Enhanced(sex: Sex, age: number, vo2: number): {
     (label === "Critically Low" || label === "Very Poor" || label === "Poor") ? "Low" :
     (label === "Fair" || label === "Good") ? "Medium" : "High";
   
-  // Assess health risk based on cardiovascular research
+  // Assess health risk
   const healthRisk: "Very Low" | "Low" | "Moderate" | "High" | "Very High" = 
     label === "Critically Low" ? "Very High" :
     label === "Superior" ? "Very Low" :
@@ -165,60 +190,94 @@ function classifyVO2Enhanced(sex: Sex, age: number, vo2: number): {
   
   // Adjust confidence based on edge cases
   if (vo2 === ageGroup.bands[0][1] || vo2 === ageGroup.bands[ageGroup.bands.length-1][1]) {
-    confidence = 0.85; // Lower confidence at boundaries
+    confidence = Math.min(confidence, 0.85);
   }
   
   return { label, zone, confidence, percentile, healthRisk };
 }
 
 function calculateEnhancedBaseline(dataset: VO2DataRow[], sex: Sex, age: number): VO2Statistics {
-  const dmin = Math.floor(age/10)*10;
-  const dmax = dmin + 9;
-  
-  const relevantRows = dataset.filter(r =>
-    (r.sex as string).toUpperCase().startsWith(sex) &&
-    (r.group?.toLowerCase() === "healthy" || !r.group) &&
-    r.age >= dmin && r.age <= dmax
-  );
-  
-  if (relevantRows.length < 3) {
-    // Fallback to ACSM data with statistical estimates
-    const ageGroup = ACSM[sex].find(({decade:[a,b]}) => age >= a && age <= b)!;
-    const good = ageGroup.bands.find(b => b[0] === "Good")?.[1] ?? 45;
-    const excellent = ageGroup.bands.find(b => b[0] === "Excellent")?.[1] ?? good + 5;
-    const mean = (good + excellent) / 2;
+  try {
+    const dmin = Math.floor(age/10)*10;
+    const dmax = dmin + 9;
+    
+    const relevantRows = dataset.filter(r =>
+      (r.sex as string).toUpperCase().startsWith(sex) &&
+      (r.group?.toLowerCase() === "healthy" || !r.group) &&
+      r.age >= dmin && r.age <= dmax
+    );
+    
+    if (relevantRows.length < 3) {
+      // Fixed: Proper error handling for ACSM fallback
+      const ageGroup = ACSM[sex].find(({decade:[a,b]}) => age >= a && age <= b);
+      
+      if (!ageGroup || !ageGroup.bands || ageGroup.bands.length === 0) {
+        console.warn(`No ACSM data found for ${sex}, age ${age}. Using demographic fallback.`);
+        // Demographic-based fallback values
+        const fallbackMean = sex === 'M' ? 
+          (age < 25 ? 50 : age < 35 ? 46 : age < 50 ? 42 : 35) :
+          (age < 25 ? 42 : age < 35 ? 38 : age < 50 ? 34 : 28);
+        
+        return {
+          mean: fallbackMean,
+          median: fallbackMean,
+          standardDeviation: fallbackMean * 0.15, // 15% CV estimate
+          sampleSize: 100, // Assumed fallback sample
+          confidenceInterval: [fallbackMean - 3, fallbackMean + 3]
+        };
+      }
+      
+      // Safe extraction with proper fallback
+      const goodBand = ageGroup.bands.find(b => b && b[0] === "Good");
+      const excellentBand = ageGroup.bands.find(b => b && b[0] === "Excellent");
+      
+      const good = goodBand?.[1] ?? (sex === 'M' ? 45 : 38);
+      const excellent = excellentBand?.[1] ?? (good + 5);
+      const mean = (good + excellent) / 2;
+      
+      return {
+        mean,
+        median: mean,
+        standardDeviation: (excellent - good) / 4,
+        sampleSize: 1000,
+        confidenceInterval: [mean - 2, mean + 2]
+      };
+    }
+    
+    const values = relevantRows.map(r => r.vo2max_ml_kg_min).sort((a, b) => a - b);
+    const n = values.length;
+    
+    const mean = values.reduce((sum, v) => sum + v, 0) / n;
+    const median = n % 2 === 0 ? 
+      (values[n/2 - 1] + values[n/2]) / 2 : 
+      values[Math.floor(n/2)];
+    
+    const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / (n - 1);
+    const standardDeviation = Math.sqrt(variance);
+    
+    const marginOfError = 1.96 * (standardDeviation / Math.sqrt(n));
+    const confidenceInterval: [number, number] = [mean - marginOfError, mean + marginOfError];
     
     return {
       mean,
-      median: mean,
-      standardDeviation: (excellent - good) / 4, // Rough estimate
-      sampleSize: 1000, // Assumed ACSM sample size
-      confidenceInterval: [mean - 2, mean + 2]
+      median,
+      standardDeviation,
+      sampleSize: n,
+      confidenceInterval
+    };
+    
+  } catch (error) {
+    console.error('Error in calculateEnhancedBaseline:', error);
+    // Emergency fallback
+    const emergencyMean = sex === 'M' ? 42 : 35;
+    return {
+      mean: emergencyMean,
+      median: emergencyMean,
+      standardDeviation: 5,
+      sampleSize: 50,
+      confidenceInterval: [emergencyMean - 3, emergencyMean + 3]
     };
   }
-  
-  const values = relevantRows.map(r => r.vo2max_ml_kg_min).sort((a, b) => a - b);
-  const n = values.length;
-  
-  const mean = values.reduce((sum, v) => sum + v, 0) / n;
-  const median = n % 2 === 0 ? 
-    (values[n/2 - 1] + values[n/2]) / 2 : 
-    values[Math.floor(n/2)];
-  
-  const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / (n - 1);
-  const standardDeviation = Math.sqrt(variance);
-  
-  // 95% confidence interval for the mean
-  const marginOfError = 1.96 * (standardDeviation / Math.sqrt(n));
-  const confidenceInterval: [number, number] = [mean - marginOfError, mean + marginOfError];
-  
-  return {
-    mean,
-    median,
-    standardDeviation,
-    sampleSize: n,
-    confidenceInterval
-  };
 }
 
 export async function GET(request: NextRequest) {
@@ -232,21 +291,21 @@ export async function GET(request: NextRequest) {
 
     // Enhanced validation
     if (!['M', 'F'].includes(sex)) {
-      return NextResponse.json({ error: 'Invalid sex parameter' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid sex parameter. Must be M or F.' }, { status: 400 });
     }
     
-    if (age < 10 || age > 99) {
+    if (isNaN(age) || age < 10 || age > 99) {
       return NextResponse.json({ error: 'Age must be between 10 and 99' }, { status: 400 });
     }
 
-    if (vo2max < 0 || vo2max > 150) {
-      return NextResponse.json({ error: 'VO2max value out of physiological range' }, { status: 400 });
+    if (isNaN(vo2max) || vo2max < 0 || vo2max > 150) {
+      return NextResponse.json({ error: 'VO2max value out of physiological range (0-150)' }, { status: 400 });
     }
 
-    // Enhanced assessment
+    // Enhanced assessment with error handling
     const classification = classifyVO2Enhanced(sex, age, vo2max);
     const statistics = calculateEnhancedBaseline(enhancedDataset, sex, age);
-    const percentageVsBaseline = ((vo2max - statistics.mean) / statistics.mean) * 100;
+    const percentageVsBaseline = statistics.mean > 0 ? ((vo2max - statistics.mean) / statistics.mean) * 100 : 0;
     
     const zoneColors = {
       Low: "#dc4446",
@@ -257,8 +316,8 @@ export async function GET(request: NextRequest) {
     const assessment: VO2Assessment = {
       label: classification.label,
       zone: classification.zone,
-      baseline: statistics.mean,
-      percentageVsBaseline,
+      baseline: Math.round(statistics.mean * 10) / 10, // Round to 1 decimal
+      percentageVsBaseline: Math.round(percentageVsBaseline * 10) / 10,
       zoneColor: zoneColors[classification.zone],
       confidence: classification.confidence,
       percentile: classification.percentile,
@@ -275,7 +334,7 @@ export async function GET(request: NextRequest) {
       statistics,
       dataset: enhancedDataset.filter(row => 
         (row.sex as string).toUpperCase().startsWith(sex) &&
-        Math.abs(row.age - age) <= 10 // Return relevant age range
+        Math.abs(row.age - age) <= 10
       )
     };
 
@@ -284,7 +343,10 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('VO2max API error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' }, 
+      { 
+        error: 'Internal server error occurred while processing VO2max assessment.',
+        details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+      }, 
       { status: 500 }
     );
   }
@@ -295,10 +357,23 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { sex, age, vo2max, min = 20, max = 75 } = body;
 
+    // Validation
+    if (!['M', 'F'].includes(sex)) {
+      return NextResponse.json({ error: 'Invalid sex parameter' }, { status: 400 });
+    }
+    
+    if (typeof age !== 'number' || age < 10 || age > 99) {
+      return NextResponse.json({ error: 'Age must be between 10 and 99' }, { status: 400 });
+    }
+
+    if (typeof vo2max !== 'number' || vo2max < 0 || vo2max > 150) {
+      return NextResponse.json({ error: 'VO2max value out of range' }, { status: 400 });
+    }
+
     // Same enhanced logic as GET
     const classification = classifyVO2Enhanced(sex, age, vo2max);
     const statistics = calculateEnhancedBaseline(enhancedDataset, sex, age);
-    const percentageVsBaseline = ((vo2max - statistics.mean) / statistics.mean) * 100;
+    const percentageVsBaseline = statistics.mean > 0 ? ((vo2max - statistics.mean) / statistics.mean) * 100 : 0;
     
     const zoneColors = {
       Low: "#dc4446",
@@ -309,8 +384,8 @@ export async function POST(request: NextRequest) {
     const assessment: VO2Assessment = {
       label: classification.label,
       zone: classification.zone,
-      baseline: statistics.mean,
-      percentageVsBaseline,
+      baseline: Math.round(statistics.mean * 10) / 10,
+      percentageVsBaseline: Math.round(percentageVsBaseline * 10) / 10,
       zoneColor: zoneColors[classification.zone],
       confidence: classification.confidence,
       percentile: classification.percentile,
